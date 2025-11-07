@@ -2,15 +2,14 @@
   "name": "@umituz/react-native-alert",
   "version": "1.0.0",
   "description": "Comprehensive alert system for React Native apps with multiple display modes, animations, queuing, and offline-first architecture",
-  "main": "./lib/index.js",
-  "types": "./lib/index.d.ts",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit",
     "lint": "tsc --noEmit",
     "clean": "rm -rf lib",
     "prebuild": "npm run clean",
-    "prepublishOnly": "npm run build",
     "version:patch": "npm version patch -m 'chore: release v%s'",
     "version:minor": "npm version minor -m 'chore: release v%s'",
     "version:major": "npm version major -m 'chore: release v%s'"
@@ -24,7 +23,7 @@
     "notification",
     "reanimated"
   ],
-  "author": "Ümit UZ <umit@umituz.com>",
+  "author": "\u00dcmit UZ <umit@umituz.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -59,10 +58,8 @@
     "access": "public"
   },
   "files": [
-    "lib",
     "src",
     "README.md",
     "LICENSE"
   ]
 }
-
