@@ -5,7 +5,7 @@
  * Handles alert creation, ID generation, and default values.
  */
 
-import * as Haptics from 'expo-haptics';
+import { HapticService } from '@umituz/react-native-haptics';
 import { Alert, AlertType, AlertMode, AlertPosition, AlertAnimation, AlertOptions, CreateAlertInput } from '../../domain/entities/Alert.entity';
 import { ALERT_ICONS, ALERT_DURATIONS } from '../../application/utils/alertConstants';
 
@@ -36,9 +36,11 @@ export class AlertService {
       priority: options.priority ?? 0,
     };
 
-    // Trigger haptic feedback
+    // Trigger haptic feedback (fire and forget)
     if (alert.hapticFeedback) {
-      this.triggerHaptic(type);
+      this.triggerHaptic(type).catch(() => {
+        // Silent error handling - haptics not supported on all platforms
+      });
     }
 
     return alert;
@@ -123,20 +125,20 @@ export class AlertService {
   /**
    * Triggers haptic feedback based on alert type
    */
-  private static triggerHaptic(type: AlertType): void {
+  private static async triggerHaptic(type: AlertType): Promise<void> {
     try {
       switch (type) {
         case AlertType.SUCCESS:
-          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          await HapticService.success();
           break;
         case AlertType.ERROR:
-          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+          await HapticService.error();
           break;
         case AlertType.WARNING:
-          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+          await HapticService.warning();
           break;
         case AlertType.INFO:
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          await HapticService.buttonPress();
           break;
       }
     } catch (error) {
