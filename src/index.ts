@@ -30,6 +30,34 @@ export { useAlertStore } from './infrastructure/storage/AlertStore';
 export { AlertService } from './infrastructure/services/AlertService';
 export { AlertQueueService } from './infrastructure/services/AlertQueueService';
 
+// Service instance (convenience export)
+import { AlertService } from './infrastructure/services/AlertService';
+import { useAlertStore } from './infrastructure/storage/AlertStore';
+
+// Wrapper object for instance methods
+export const alertService = {
+  error: (title: string, message?: string, options?: any) => {
+    const alert = AlertService.createErrorAlert(title, message, options);
+    useAlertStore.getState().addAlert(alert);
+    return alert.id;
+  },
+  success: (title: string, message?: string, options?: any) => {
+    const alert = AlertService.createSuccessAlert(title, message, options);
+    useAlertStore.getState().addAlert(alert);
+    return alert.id;
+  },
+  warning: (title: string, message?: string, options?: any) => {
+    const alert = AlertService.createWarningAlert(title, message, options);
+    useAlertStore.getState().addAlert(alert);
+    return alert.id;
+  },
+  info: (title: string, message?: string, options?: any) => {
+    const alert = AlertService.createInfoAlert(title, message, options);
+    useAlertStore.getState().addAlert(alert);
+    return alert.id;
+  },
+};
+
 // Utilities
 export * from './application/utils/alertConstants';
 export * from './application/utils/alertPresets';
