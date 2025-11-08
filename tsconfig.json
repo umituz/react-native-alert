@@ -12,13 +12,13 @@
     "baseUrl": "./",
 
     /* Emit */
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false,
     "outDir": "./lib",
     "rootDir": "./src",
     "removeComments": false,
-    "noEmit": false,
+    "noEmit": true,
 
     /* Interop Constraints */
     "esModuleInterop": true,
