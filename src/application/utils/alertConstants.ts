@@ -8,8 +8,8 @@ import { AlertType } from '../../domain/entities/Alert.entity';
 
 export const ALERT_ICONS = {
   [AlertType.SUCCESS]: 'CircleCheck',
-  [AlertType.ERROR]: 'XCircle',
-  [AlertType.WARNING]: 'AlertTriangle',
+  [AlertType.ERROR]: 'CircleX',
+  [AlertType.WARNING]: 'TriangleAlert',
   [AlertType.INFO]: 'Info',
 } as const;
 
