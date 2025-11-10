@@ -36,6 +36,7 @@
 
     /* Completeness */
     "skipLibCheck": true,
+    "types": ["react", "react-native", "node"],
 
     /* React Native specific */
     "allowJs": false,

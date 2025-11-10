@@ -1,6 +1,6 @@
 {
   "name": "@umituz/react-native-alert",
-  "version": "1.0.6",
+  "version": "1.0.8",
   "description": "Comprehensive alert system for React Native apps with multiple display modes, animations, queuing, and offline-first architecture",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
@@ -20,7 +20,7 @@
     "notification",
     "reanimated"
   ],
-  "author": "\u00dcmit UZ <umit@umituz.com>",
+  "author": "Ümit UZ <umit@umituz.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -42,7 +42,7 @@
     "@react-native-async-storage/async-storage": "1.23.1",
     "@types/react": "^18.2.45",
     "@types/react-native": "^0.73.0",
-    "@umituz/react-native-design-system": "latest",
+    "@umituz/react-native-design-system": "^1.5.28",
     "@umituz/react-native-haptics": "latest",
     "react": "^18.2.0",
     "react-native": "^0.74.0",
