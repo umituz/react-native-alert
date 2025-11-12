@@ -21,32 +21,19 @@ export function AlertModal({ alert }: AlertModalProps) {
   const tokens = useAppDesignTokens();
   const { modalRef, present, dismiss } = useBottomSheetModal();
   const [isRendered, setIsRendered] = useState(false);
-  const [hasPresented, setHasPresented] = useState(false);
 
   // Lazy rendering: Only render BottomSheetModal when we're ready to show it
-  // This prevents Reanimated initialization errors
-  // BottomSheetModal already uses useReanimatedReady() internally (500ms delay)
-  // present() method already has requestAnimationFrame internally
-  // We just need to render first, then call present() after a short delay
+  // This prevents Reanimated initialization errors on app startup
+  // BottomSheetModal already uses useReanimatedReady() internally, so it's safe to render
   useEffect(() => {
     // Set rendered state first - this will trigger BottomSheetModal to render
     setIsRendered(true);
     
-    // Present modal after BottomSheetModal has mounted
-    // BottomSheetModal's useReanimatedReady() ensures it's ready before rendering
-    // present() method already has requestAnimationFrame, so we just need a minimal delay
-    // to ensure the component is mounted in the DOM
-    const timer = setTimeout(() => {
-      if (!hasPresented) {
-        present();
-        setHasPresented(true);
-      }
-    }, 100); // Minimal delay just to ensure BottomSheetModal is mounted
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [present, hasPresented]);
+    // Present modal immediately - BottomSheetModal's useReanimatedReady() ensures
+    // it won't render GorhomBottomSheetModal until Reanimated is ready
+    // present() method will be called safely after BottomSheetModal is mounted
+    present();
+  }, [present]);
 
   const handleDismiss = () => {
     dismiss();
