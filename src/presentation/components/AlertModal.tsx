@@ -25,29 +25,23 @@ export function AlertModal({ alert }: AlertModalProps) {
 
   // Lazy rendering: Only render BottomSheetModal when we're ready to show it
   // This prevents Reanimated initialization errors
-  // Pattern from FilterSheet: render first, then present after mount
+  // BottomSheetModal already uses useReanimatedReady() internally (500ms delay)
+  // present() method already has requestAnimationFrame internally
+  // We just need to render first, then call present() after a short delay
   useEffect(() => {
     // Set rendered state first - this will trigger BottomSheetModal to render
     setIsRendered(true);
     
     // Present modal after BottomSheetModal has mounted
-    // BottomSheetModal has internal 500ms mount delay + 3 requestAnimationFrames
-    // We wait a bit longer to ensure it's fully ready
+    // BottomSheetModal's useReanimatedReady() ensures it's ready before rendering
+    // present() method already has requestAnimationFrame, so we just need a minimal delay
+    // to ensure the component is mounted in the DOM
     const timer = setTimeout(() => {
-      // Use multiple requestAnimationFrames to ensure BottomSheetModal is fully mounted
-      // This matches the pattern used in FilterSheet
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            // Only present if not already presented
-            if (!hasPresented) {
-              present();
-              setHasPresented(true);
-            }
-          });
-        });
-      });
-    }, 800); // Wait longer than BottomSheetModal's 500ms mount delay + animation frames
+      if (!hasPresented) {
+        present();
+        setHasPresented(true);
+      }
+    }, 100); // Minimal delay just to ensure BottomSheetModal is mounted
 
     return () => {
       clearTimeout(timer);
