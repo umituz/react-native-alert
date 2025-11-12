@@ -25,30 +25,34 @@ export function AlertModal({ alert }: AlertModalProps) {
 
   // Lazy rendering: Only render BottomSheetModal when we're ready to show it
   // This prevents Reanimated initialization errors
+  // Pattern from FilterSheet: render first, then present after mount
   useEffect(() => {
-    // Set rendered state first
+    // Set rendered state first - this will trigger BottomSheetModal to render
     setIsRendered(true);
-  }, []);
-
-  // Present modal after it's rendered and mounted
-  useEffect(() => {
-    if (isRendered && !hasPresented) {
-      // Wait for BottomSheetModal to mount (500ms delay + animation frames)
-      const timer = setTimeout(() => {
-        // Use requestAnimationFrame to ensure DOM is ready
+    
+    // Present modal after BottomSheetModal has mounted
+    // BottomSheetModal has internal 500ms mount delay + 3 requestAnimationFrames
+    // We wait a bit longer to ensure it's fully ready
+    const timer = setTimeout(() => {
+      // Use multiple requestAnimationFrames to ensure BottomSheetModal is fully mounted
+      // This matches the pattern used in FilterSheet
+      requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
-            present();
-            setHasPresented(true);
+            // Only present if not already presented
+            if (!hasPresented) {
+              present();
+              setHasPresented(true);
+            }
           });
         });
-      }, 700); // Wait longer than BottomSheetModal's 500ms mount delay
+      });
+    }, 800); // Wait longer than BottomSheetModal's 500ms mount delay + animation frames
 
-      return () => {
-        clearTimeout(timer);
-      };
-    }
-  }, [isRendered, hasPresented, present]);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [present, hasPresented]);
 
   const handleDismiss = () => {
     dismiss();
@@ -102,12 +106,6 @@ export function AlertModal({ alert }: AlertModalProps) {
       enableBackdrop
       enablePanDownToClose={alert.dismissible ?? true}
       onDismiss={handleDismiss}
-      onChange={(index) => {
-        // Track when modal is actually mounted and ready
-        if (index >= 0 && !hasPresented) {
-          setHasPresented(true);
-        }
-      }}
     >
       <View style={[styles.container, { padding: tokens.spacing.lg }]}>
         {alert.icon && (
