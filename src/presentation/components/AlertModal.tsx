@@ -5,7 +5,7 @@
  * Used for confirmations, important messages, and actions requiring user interaction.
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { BottomSheetModal, useBottomSheetModal } from '@umituz/react-native-bottom-sheet';
 import { AtomicText, AtomicIcon, AtomicButton, useAppDesignTokens } from '@umituz/react-native-design-system';
@@ -20,18 +20,35 @@ export function AlertModal({ alert }: AlertModalProps) {
   const dismissAlert = useAlertStore((state) => state.dismissAlert);
   const tokens = useAppDesignTokens();
   const { modalRef, present, dismiss } = useBottomSheetModal();
+  const [isRendered, setIsRendered] = useState(false);
+  const [hasPresented, setHasPresented] = useState(false);
 
+  // Lazy rendering: Only render BottomSheetModal when we're ready to show it
+  // This prevents Reanimated initialization errors
   useEffect(() => {
-    // Wait for BottomSheetModal to mount before presenting
-    // BottomSheetModal has internal isMounted check that delays rendering
-    const timer = setTimeout(() => {
-      present();
-    }, 400); // Wait longer than BottomSheetModal's 300ms mount delay
+    // Set rendered state first
+    setIsRendered(true);
+  }, []);
 
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [present]);
+  // Present modal after it's rendered and mounted
+  useEffect(() => {
+    if (isRendered && !hasPresented) {
+      // Wait for BottomSheetModal to mount (500ms delay + animation frames)
+      const timer = setTimeout(() => {
+        // Use requestAnimationFrame to ensure DOM is ready
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            present();
+            setHasPresented(true);
+          });
+        });
+      }, 700); // Wait longer than BottomSheetModal's 500ms mount delay
+
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [isRendered, hasPresented, present]);
 
   const handleDismiss = () => {
     dismiss();
@@ -72,6 +89,12 @@ export function AlertModal({ alert }: AlertModalProps) {
 
   const iconColor = getIconColor(alert.type);
 
+  // Lazy rendering: Only render BottomSheetModal when ready
+  // This prevents Reanimated initialization errors on app startup
+  if (!isRendered) {
+    return null;
+  }
+
   return (
     <BottomSheetModal
       ref={modalRef}
@@ -79,6 +102,12 @@ export function AlertModal({ alert }: AlertModalProps) {
       enableBackdrop
       enablePanDownToClose={alert.dismissible ?? true}
       onDismiss={handleDismiss}
+      onChange={(index) => {
+        // Track when modal is actually mounted and ready
+        if (index >= 0 && !hasPresented) {
+          setHasPresented(true);
+        }
+      }}
     >
       <View style={[styles.container, { padding: tokens.spacing.lg }]}>
         {alert.icon && (
