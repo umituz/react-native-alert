@@ -22,8 +22,15 @@ export function AlertModal({ alert }: AlertModalProps) {
   const { modalRef, present, dismiss } = useBottomSheetModal();
 
   useEffect(() => {
-    // Present modal when alert is shown
-    present();
+    // Wait for BottomSheetModal to mount before presenting
+    // BottomSheetModal has internal isMounted check that delays rendering
+    const timer = setTimeout(() => {
+      present();
+    }, 400); // Wait longer than BottomSheetModal's 300ms mount delay
+
+    return () => {
+      clearTimeout(timer);
+    };
   }, [present]);
 
   const handleDismiss = () => {
