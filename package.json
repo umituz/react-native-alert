@@ -1,6 +1,6 @@
 {
   "name": "@umituz/react-native-alert",
-  "version": "1.0.8",
+  "version": "1.0.10",
   "description": "Comprehensive alert system for React Native apps with multiple display modes, animations, queuing, and offline-first architecture",
   "main": "./src/index.ts",
   "types": "./src/index.ts",

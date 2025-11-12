@@ -5,10 +5,10 @@
  * Used for confirmations, important messages, and actions requiring user interaction.
  */
 
-import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, View, Pressable } from 'react-native';
-import BottomSheet from '@gorhom/bottom-sheet';
-import { AtomicText, Icon, AtomicButton, useAppDesignTokens } from '@umituz/react-native-design-system';
+import React, { useEffect } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { BottomSheetModal, useBottomSheetModal } from '@umituz/react-native-bottom-sheet';
+import { AtomicText, AtomicIcon, AtomicButton, useAppDesignTokens } from '@umituz/react-native-design-system';
 import { Alert, AlertType } from '../../domain/entities/Alert.entity';
 import { useAlertStore } from '../../infrastructure/storage/AlertStore';
 
@@ -17,16 +17,17 @@ interface AlertModalProps {
 }
 
 export function AlertModal({ alert }: AlertModalProps) {
-  const [isVisible, setIsVisible] = useState(false);
   const dismissAlert = useAlertStore((state) => state.dismissAlert);
   const tokens = useAppDesignTokens();
+  const { modalRef, present, dismiss } = useBottomSheetModal();
 
   useEffect(() => {
-    setIsVisible(true);
-  }, []);
+    // Present modal when alert is shown
+    present();
+  }, [present]);
 
   const handleDismiss = () => {
-    setIsVisible(false);
+    dismiss();
     setTimeout(() => {
       dismissAlert(alert.id);
     }, 300);
@@ -64,15 +65,13 @@ export function AlertModal({ alert }: AlertModalProps) {
 
   const iconColor = getIconColor(alert.type);
 
-  const bottomSheetRef = useRef<BottomSheet>(null);
-
   return (
-    <BottomSheet
-      ref={bottomSheetRef}
-      index={isVisible ? 0 : -1}
-      snapPoints={['50%']}
+    <BottomSheetModal
+      ref={modalRef}
+      preset="medium"
+      enableBackdrop
       enablePanDownToClose={alert.dismissible ?? true}
-      onClose={handleDismiss}
+      onDismiss={handleDismiss}
     >
       <View style={[styles.container, { padding: tokens.spacing.lg }]}>
         {alert.icon && (
@@ -87,9 +86,10 @@ export function AlertModal({ alert }: AlertModalProps) {
                 },
               ]}
             >
-              <Icon
+              <AtomicIcon
                 name={alert.icon as any}
-                color="success"
+                color={iconColor as any}
+                size="lg"
               />
             </View>
           </View>
@@ -136,6 +136,11 @@ export function AlertModal({ alert }: AlertModalProps) {
                   }
                 }}
                 fullWidth
+                style={
+                  action.style === 'destructive'
+                    ? { borderColor: tokens.colors.error }
+                    : undefined
+                }
               >
                 {action.label}
               </AtomicButton>
@@ -153,7 +158,7 @@ export function AlertModal({ alert }: AlertModalProps) {
           )
         )}
       </View>
-    </BottomSheet>
+    </BottomSheetModal>
   );
 }
 
@@ -164,7 +169,7 @@ function getButtonVariant(style: 'primary' | 'secondary' | 'destructive'): 'prim
     case 'secondary':
       return 'secondary';
     case 'destructive':
-      return 'primary';
+      return 'outline';
     default:
       return 'primary';
   }
