@@ -5,7 +5,16 @@
  * Handles alert creation, ID generation, and default values.
  */
 
-import { HapticService } from '@umituz/react-native-haptics';
+// Optional haptics - may not be installed in all projects
+let HapticService: any = null;
+try {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const hapticsModule = require('@umituz/react-native-haptics');
+  HapticService = hapticsModule.HapticService;
+} catch {
+  // Haptics package not installed - continue without haptics
+}
+
 import { Alert, AlertType, AlertMode, AlertPosition, AlertAnimation, AlertOptions, CreateAlertInput } from '../../domain/entities/Alert.entity';
 import { ALERT_ICONS, ALERT_DURATIONS } from '../../application/utils/alertConstants';
 
@@ -126,6 +135,11 @@ export class AlertService {
    * Triggers haptic feedback based on alert type
    */
   private static async triggerHaptic(type: AlertType): Promise<void> {
+    // Skip if haptics package is not installed
+    if (!HapticService) {
+      return;
+    }
+
     try {
       switch (type) {
         case AlertType.SUCCESS:
