@@ -7,7 +7,9 @@
 
 import React from 'react';
 import { StyleSheet, View, Pressable, StyleProp, ViewStyle } from 'react-native';
-import { AtomicText, Icon, useAppDesignTokens } from '@umituz/react-native-design-system';
+import { AtomicText } from '@umituz/react-native-design-system-atoms';
+import { Icon } from '@expo/vector-icons';
+import { useAppDesignTokens } from '@umituz/react-native-design-system-theme';
 import { Alert, AlertType } from '../../domain/entities/Alert.entity';
 import { useAlertStore } from '../../infrastructure/storage/AlertStore';
 import { ALERT_SPACING } from '../../application/utils/alertConstants';
