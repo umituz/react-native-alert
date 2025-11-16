@@ -9,7 +9,7 @@ import { Alert } from '../../domain/entities/Alert.entity';
 import { useAlertStore } from '../storage/AlertStore';
 
 export class AlertQueueService {
-  private static processingInterval: NodeJS.Timeout | null = null;
+  private static processingInterval: ReturnType<typeof setInterval> | null = null;
   private static isRunning = false;
 
   /**
