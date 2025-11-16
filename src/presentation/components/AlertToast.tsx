@@ -9,7 +9,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Pressable, StyleProp, ViewStyle } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { AtomicText } from '@umituz/react-native-design-system-atoms';
-import { Icon } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useAppDesignTokens } from '@umituz/react-native-design-system-theme';
 import { Alert, AlertType } from '../../domain/entities/Alert.entity';
 import { useAlertStore } from '../../infrastructure/storage/AlertStore';
@@ -113,9 +113,10 @@ export function AlertToast({ alert }: AlertToastProps) {
         <View style={styles.row}>
           {alert.icon && (
             <View style={[styles.iconContainer, { marginRight: tokens.spacing.sm }]}>
-              <Icon
+              <Ionicons
                 name={alert.icon as any}
-                color="textInverse"
+                size={20}
+                color={textColor}
               />
             </View>
           )}
@@ -149,7 +150,7 @@ export function AlertToast({ alert }: AlertToastProps) {
               style={[styles.closeButton, { marginLeft: tokens.spacing.sm }]}
               hitSlop={8}
             >
-              <Icon name="X" color="textInverse" />
+              <Ionicons name="close" size={20} color={textColor} />
             </Pressable>
           )}
         </View>
