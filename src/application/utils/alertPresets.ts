@@ -87,7 +87,7 @@ export const ALERT_PRESETS: Record<AlertPresetName, AlertPreset> = {
     mode: AlertMode.TOAST,
     title: 'Error',
     message: 'Something went wrong. Please try again.',
-    icon: 'CircleX',
+    icon: 'close-circle',
     duration: ALERT_DURATIONS.LONG,
   },
 

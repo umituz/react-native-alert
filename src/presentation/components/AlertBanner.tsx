@@ -5,43 +5,28 @@
  * Full-width notification bar for important messages.
  */
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { StyleSheet, View, Pressable } from 'react-native';
-import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AtomicText } from '@umituz/react-native-design-system-atoms';
 import { Ionicons } from '@expo/vector-icons';
 import { useAppDesignTokens } from '@umituz/react-native-design-system-theme';
 import { Alert, AlertType, AlertPosition } from '../../domain/entities/Alert.entity';
 import { useAlertStore } from '../../infrastructure/storage/AlertStore';
-import { useAlertAnimation } from '../hooks/useAlertAnimation';
-import { ALERT_SIZES, ALERT_SPACING } from '../../application/utils/alertConstants';
+import { ALERT_SIZES } from '../../application/utils/alertConstants';
 
 interface AlertBannerProps {
   alert: Alert;
 }
 
 export function AlertBanner({ alert }: AlertBannerProps) {
-  const [isVisible, setIsVisible] = useState(false);
   const dismissAlert = useAlertStore((state) => state.dismissAlert);
   const insets = useSafeAreaInsets();
-  const { animatedStyle } = useAlertAnimation({
-    animation: alert.animation ?? 'slide' as any,
-    position: alert.position ?? 'top' as any,
-    isVisible,
-  });
   const tokens = useAppDesignTokens();
-
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
 
   const handleDismiss = () => {
     if (alert.dismissible) {
-      setIsVisible(false);
-      setTimeout(() => {
-        dismissAlert(alert.id);
-      }, 300);
+      dismissAlert(alert.id);
     }
   };
 
@@ -69,7 +54,7 @@ export function AlertBanner({ alert }: AlertBannerProps) {
   const isTop = alert.position === AlertPosition.TOP;
 
   return (
-    <Animated.View
+    <View
       style={[
         styles.container,
         {
@@ -79,7 +64,6 @@ export function AlertBanner({ alert }: AlertBannerProps) {
           paddingHorizontal: tokens.spacing.md,
           minHeight: ALERT_SIZES.BANNER_HEIGHT,
         },
-        animatedStyle,
       ]}
       testID={alert.testID}
     >
@@ -163,7 +147,7 @@ export function AlertBanner({ alert }: AlertBannerProps) {
           </View>
         )}
       </View>
-    </Animated.View>
+    </View>
   );
 }
 

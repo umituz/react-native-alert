@@ -13,7 +13,6 @@ export * from './domain/entities/AlertQueue.entity';
 // Hooks
 export { useAlert } from './presentation/hooks/useAlert';
 export type { UseAlertReturn } from './presentation/hooks/useAlert';
-export { useAlertAnimation } from './presentation/hooks/useAlertAnimation';
 
 // Components
 export { AlertProvider } from './presentation/components/AlertProvider';

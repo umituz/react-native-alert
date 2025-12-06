@@ -1,45 +1,30 @@
 /**
  * AlertToast Component
  *
- * Displays a toast-style alert with animations.
- * Floats on top of content with smooth enter/exit animations.
+ * Displays a toast-style alert.
+ * Floats on top of content.
  */
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { StyleSheet, View, Pressable, StyleProp, ViewStyle } from 'react-native';
-import Animated from 'react-native-reanimated';
 import { AtomicText } from '@umituz/react-native-design-system-atoms';
 import { Ionicons } from '@expo/vector-icons';
 import { useAppDesignTokens } from '@umituz/react-native-design-system-theme';
 import { Alert, AlertType } from '../../domain/entities/Alert.entity';
 import { useAlertStore } from '../../infrastructure/storage/AlertStore';
-import { useAlertAnimation } from '../hooks/useAlertAnimation';
-import { ALERT_SIZES, ALERT_SPACING } from '../../application/utils/alertConstants';
+import { ALERT_SIZES } from '../../application/utils/alertConstants';
 
 interface AlertToastProps {
   alert: Alert;
 }
 
 export function AlertToast({ alert }: AlertToastProps) {
-  const [isVisible, setIsVisible] = useState(false);
   const dismissAlert = useAlertStore((state) => state.dismissAlert);
-  const { animatedStyle } = useAlertAnimation({
-    animation: alert.animation ?? 'slide' as any,
-    position: alert.position ?? 'top' as any,
-    isVisible,
-  });
   const tokens = useAppDesignTokens();
-
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
 
   const handleDismiss = () => {
     if (alert.dismissible) {
-      setIsVisible(false);
-      setTimeout(() => {
-        dismissAlert(alert.id);
-      }, 300);
+      dismissAlert(alert.id);
     }
   };
 
@@ -58,7 +43,7 @@ export function AlertToast({ alert }: AlertToastProps) {
     }
   };
 
-  const getTextColor = (type: AlertType): string => {
+  const getTextColor = (): string => {
     return tokens.colors.textInverse;
   };
 
@@ -93,10 +78,10 @@ export function AlertToast({ alert }: AlertToastProps) {
   };
 
   const backgroundColor = getBackgroundColor(alert.type);
-  const textColor = getTextColor(alert.type);
+  const textColor = getTextColor();
 
   return (
-    <Animated.View
+    <View
       style={[
         styles.container,
         {
@@ -105,7 +90,6 @@ export function AlertToast({ alert }: AlertToastProps) {
           borderRadius: tokens.spacing.xs,
           maxWidth: ALERT_SIZES.TOAST_MAX_WIDTH,
         },
-        animatedStyle,
       ]}
       testID={alert.testID}
     >
@@ -191,7 +175,7 @@ export function AlertToast({ alert }: AlertToastProps) {
           </View>
         )}
       </Pressable>
-    </Animated.View>
+    </View>
   );
 }
 
